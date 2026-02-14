@@ -11,6 +11,7 @@ import { debugLogger } from './middleware/debug.js';
 import { mongoConnection } from './db/mongo/connection/index.js';
 import { mysqlConnection } from './db/mysql/connection/index.js';
 import { sendgrid } from './integrations/sendgrid/index.js';
+import { sqsClient } from './sqs/client/index.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -33,6 +34,9 @@ async function main() {
       mongoConnection.init(),
       mysqlConnection.init(),
     ]);
+
+    // Initialize SQS Consumer
+    sqsClient.initConsumer();
 
     // Initialize integrations
     await Promise.all([
