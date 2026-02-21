@@ -4,10 +4,10 @@
  */
 
 import express from 'express';
-import { notifyController } from '../../controller/notifyController.js';
+import { controller } from '../../controller/index.js';
 
 const router = new express.Router();
 
-router.post('/notify', notifyController.sendNotification);
+router.post('/notify', controller.notifyController.sendNotification);
 
 export const notifyRouter = router;

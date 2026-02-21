@@ -18,6 +18,29 @@ export const common = {
   },
 
   /**
+   * Parses a JSON string into an object. If parsing fails, returns the original string.
+   * @function parseJSON
+   * @param {string} data - The JSON string to parse.
+   * @returns {Object|string} The parsed JSON object, or the original string if parsing fails.
+   * @example
+   * const jsonString = '{"key":"value"}';
+   * const result = common.parseJSON(jsonString);
+   * console.log(result); // { key: 'value' }
+   *
+   * const invalidJsonString = 'not a json';
+   * const result2 = common.parseJSON(invalidJsonString);
+   * console.log(result2); // 'not a json'
+   */
+  parseJSON: (data) => {
+    try {
+      return JSON.parse(data);
+    } catch (error) {
+      console.error('Error parsing JSON:', error);
+      return data;
+    }
+  },
+
+  /**
    * Checks if the given data is `null` or `undefined`.
    * @function isNullorUndefined
    * @param {*} data - The data to check.

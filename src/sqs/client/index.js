@@ -2,6 +2,7 @@
 import { SQSClient } from '@aws-sdk/client-sqs';
 import { Consumer } from 'sqs-consumer';
 import { sqsClientConfig } from '../../config/sqs/sqsClientConfig.js';
+import { controller } from '../../controller/index.js';
 
 let sqsClientInstanceMap = new Map();
 
@@ -32,14 +33,7 @@ export const sqsClient = {
         consumer = Consumer.create({
           queueUrl: queueUrl,
           region: process.env.AWS_SQS_REGION_DEFAULT,
-          handleMessage: async (message) => {
-            try {
-              let event = JSON.parse(message.Body);
-              console.log('Received event:', event);
-            } catch (error) {
-              console.error('Error processing message:', error);
-            }
-          },
+          handleMessage: controller.sqsConsumerController.consumeMessage,
         });
         break;
       default:
