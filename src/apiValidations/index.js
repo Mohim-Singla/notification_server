@@ -1,5 +1,5 @@
-import { authSchema } from './auth.js';
+import { notifySchema } from './notify.js';
 
 export const JoiSchemas = {
-  authSchema,
+  notifySchema,
 };
