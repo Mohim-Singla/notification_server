@@ -25,7 +25,6 @@ export const sqsConsumerController = {
       return true;
     } catch (error) {
       console.error('Error consuming message with message Id:', messageId, error);
-      // Return true since DLQ is not configured
       return true;
     }
   },

@@ -21,7 +21,6 @@ export const emailService = {
         text: params.text,
         html: params.html,
       };
-      console.log('msg-----', msg);
       await sgMail.send(msg);
       return { success: true };
     } catch (error) {

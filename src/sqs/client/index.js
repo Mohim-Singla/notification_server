@@ -1,5 +1,5 @@
 // sqsClient.js
-import { SQSClient } from '@aws-sdk/client-sqs';
+import { SQSClient, DeleteMessageCommand } from '@aws-sdk/client-sqs';
 import { Consumer } from 'sqs-consumer';
 import { sqsClientConfig } from '../../config/sqs/sqsClientConfig.js';
 import { controller } from '../../controller/index.js';
@@ -22,7 +22,13 @@ export const sqsClient = {
       region = process.env.AWS_SQS_REGION_DEFAULT;
     }
 
-    const instance = sqsClientInstanceMap.get(region) ?? new SQSClient({ region });
+    const instance = sqsClientInstanceMap.get(region) ?? new SQSClient({
+      region,
+      credentials: {
+        accessKeyId: sqsClientConfig.ACCESS_KEY_ID,
+        secretAccessKey: sqsClientConfig.SECRET_ACCESS_KEY,
+      },
+    });
     sqsClientInstanceMap.set(region, instance);
 
     return instance;
@@ -50,8 +56,23 @@ export const sqsClient = {
       case 'notify_events':
         consumer = Consumer.create({
           queueUrl: queueUrl,
-          region: process.env.AWS_SQS_REGION_DEFAULT,
-          handleMessage: controller.sqsConsumerController.consumeMessage,
+          sqs: sqsClient.getInstance(process.env.AWS_SQS_REGION_DEFAULT),
+          handleMessage: async (message) => {
+            try {
+              const result = await controller.sqsConsumerController.consumeMessage(message);
+              if (result) {
+                const deleteCommand = new DeleteMessageCommand({
+                  QueueUrl: queueUrl,
+                  ReceiptHandle: message.ReceiptHandle,
+                });
+                await consumer.sqs.send(deleteCommand);
+                console.log('Message acknowledged and deleted:', message.MessageId);
+              }
+            } catch (error) {
+              console.error('Error processing message, not acknowledging:', message.MessageId, error);
+              // Do not delete, let it retry or go to DLQ
+            }
+          },
         });
         break;
       default:
