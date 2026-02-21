@@ -17,6 +17,9 @@ const app = express();
 const server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
 
+/**
+ * Main application entry point. Initializes connections and starts the server.
+ */
 async function main() {
   try {
     app.use(cors({

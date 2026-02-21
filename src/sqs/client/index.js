@@ -6,7 +6,17 @@ import { controller } from '../../controller/index.js';
 
 let sqsClientInstanceMap = new Map();
 
+/**
+ * SQS Client module for managing AWS SQS interactions.
+ * Provides methods to get SQS client instances, queue URLs, and initialize consumers.
+ * @module sqsClient
+ */
 export const sqsClient = {
+  /**
+   * Gets an SQS client instance for the specified region.
+   * @param {string} region - AWS region.
+   * @returns {SQSClient} SQS client instance.
+   */
   getInstance: (region) => {
     if (!region) {
       region = process.env.AWS_SQS_REGION_DEFAULT;
@@ -17,9 +27,17 @@ export const sqsClient = {
 
     return instance;
   },
+  /**
+   * Gets the queue URL for a given queue name.
+   * @param {string} queueName - Name of the queue.
+   * @returns {string} Queue URL.
+   */
   getQueueUrl: (queueName) => {
     return `https://sqs.${sqsClientConfig.REGION}.amazonaws.com/${process.env.AWS_ACCOUNT_ID}/${queueName}`;
   },
+  /**
+   * Initializes SQS consumers for the configured queues.
+   */
   initConsumer: () => {
     const queueNames = sqsClientConfig.QUEUE_LIST.split(',').map((name) => name.trim());
 

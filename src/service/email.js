@@ -2,6 +2,15 @@ import { sendgrid } from '../integrations/sendgrid/index.js';
 // const sgMail = await import('../integrations/sendgrid/index.js').then(module => module.sendgrid.getInstance());
 
 export const emailService = {
+  /**
+   * Sends an email using SendGrid.
+   * @param {object} params - Email parameters.
+   * @param {string} params.to - Recipient email address.
+   * @param {string} params.subject - Email subject.
+   * @param {string} params.text - Plain text body.
+   * @param {string} params.html - HTML body.
+   * @returns {Promise<{success: boolean, error?: string}>} Result of the email send operation.
+   */
   sendEmail: async (params) => {
     try {
       const sgMail = await sendgrid.getInstance();

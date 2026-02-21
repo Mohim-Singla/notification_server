@@ -2,6 +2,11 @@ import { service } from '../service/index.js';
 import { utils } from '../utils/index.js';
 
 export const sqsConsumerController = {
+  /**
+   * Consumes an SQS message and processes it.
+   * @param {object} sqsMessage - The SQS message object.
+   * @returns {Promise<boolean>} True if processed successfully.
+   */
   consumeMessage: async (sqsMessage) => {
     let messageId = '';
     try {
